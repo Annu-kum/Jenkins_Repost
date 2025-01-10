@@ -4,7 +4,7 @@ pipeline {
     environment {
         TOMCAT_USER = 'tomcat'
         TOMCAT_PASS = 'tomcat'
-        TOMCAT_URL = 'http://192.168.29.180:7272/manager/text'
+        TOMCAT_URL = 'http://192.168.29.245:7272/manager/text'
     }
 
     stages {
