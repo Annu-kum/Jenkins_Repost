@@ -16,21 +16,28 @@ pipeline {
         stage('Build Project') {
             steps {
                 script {
-                    // Use Gradle wrapper to build the project
-                    sh './gradlew clean build'
+                    // Use Gradle wrapper to build the project on Windows
+                    bat '.\\gradlew.bat clean build'
                 }
             }
         }
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    // Deploy WAR to Tomcat using cURL
-                    def warFile = 'build/libs/NewPRJ.war'
-                    sh """
-                    curl --upload-file ${warFile} \
-                        --user ${TOMCAT_USER}:${TOMCAT_PASS} \
-                        ${TOMCAT_URL}/deploy?path=/NewPRJ
-                    """
+                    // Path to the WAR file
+                    def warFile = 'build\\libs\\NewPRJ.war'
+
+                    // Ensure WAR file exists before deployment
+                    if (fileExists(warFile)) {
+                        // Deploy WAR to Tomcat using cURL
+                        bat """
+                        curl --upload-file ${warFile} ^
+                            --user ${TOMCAT_USER}:${TOMCAT_PASS} ^
+                            ${TOMCAT_URL}/deploy?path=/NewPRJ
+                        """
+                    } else {
+                        error "WAR file not found at ${warFile}"
+                    }
                 }
             }
         }
@@ -44,4 +51,3 @@ pipeline {
         }
     }
 }
-
